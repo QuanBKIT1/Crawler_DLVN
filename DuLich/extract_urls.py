@@ -1,9 +1,11 @@
+from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 import time
+
 driver = webdriver.Chrome()
 url = 'https://dulichviet.com.vn/du-lich-trong-nuoc'
 driver.get(url)
@@ -17,10 +19,18 @@ try:
         button.click()
         time.sleep(3)
     html_content = driver.page_source
-    file_path = 'html.txt'
+    file_path = 'out.html'
     # Write the HTML content to the file
     with open(file_path, 'w', encoding='utf-8') as file:
         file.write(html_content)
 except Exception as e:
     print(f"An error occurred: {e}")
-# driver.quit()
+driver.quit()
+
+with open('out.html', 'r', encoding='utf-8') as file:
+        html_doc = file.read()
+soup = BeautifulSoup(html_doc, 'html.parser')
+elements = soup.select('.mda-box-name ')
+with open('urls.txt', 'w') as file:
+    for element in elements:
+          file.write(element.get('href')+'\n')
